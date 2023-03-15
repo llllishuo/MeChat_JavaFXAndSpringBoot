@@ -165,9 +165,9 @@ public class LoginViewController implements Initializable {
 
 
 
-        if(newStage.getScene()==null){
-            view = logonView.getView();
-        }
+
+        view = logonView.getView();
+
         scene = new Scene(view);
         log.info(String.valueOf(view.getStyle().getClass()));
         log.info(String.valueOf(newStage.getScene()));
