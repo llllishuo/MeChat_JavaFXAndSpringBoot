@@ -1,7 +1,6 @@
 package com.example.UI.controller;
 
 import com.example.UI.view.LoginView;
-import com.example.server.common.R;
 import com.example.server.controller.FileUploadController;
 import com.example.server.controller.LoginController;
 import com.example.server.entity.Login;
@@ -87,10 +86,10 @@ public class LogonViewController implements Initializable {
     }
     @FXML
     void backClicked(MouseEvent event) throws IOException {
-        Stage close = (Stage) back.getScene().getWindow();
-        close.close();
+//        Stage close = (Stage) back.getScene().getWindow();
+//        close.close();
         // 创建一个新的Stage
-        Stage newStage = new Stage();
+        Stage newStage =(Stage) back.getScene().getWindow();;
         // 使用FXMLLoader从FXML文件加载新窗口的场景
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
         Parent root = loader.load();
@@ -109,7 +108,8 @@ public class LogonViewController implements Initializable {
         LoginAndUser loginAndUser = new LoginAndUser();
         User user = new User();
         user.setName(name.getText());
-        user.setHeadImg(fileUploadController.getResourcesURL());
+//        user.setHeadImg(fileUploadController.getResourcesURL());
+        user.setHeadImg("image/headImage.png");
         user.setUsername(username.getText());
         user.setSign("");
 
@@ -121,10 +121,8 @@ public class LogonViewController implements Initializable {
         loginAndUser.setLogin(login);
 
         loginController.updateLoginAndUser(loginAndUser);
-        Stage close = (Stage) back.getScene().getWindow();
-        close.close();
-        // 创建一个新的Stage
-        Stage newStage = new Stage();
+
+        Stage newStage = (Stage) back.getScene().getWindow();;
         // 使用FXMLLoader从FXML文件加载新窗口的场景
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
         Parent root = loader.load();

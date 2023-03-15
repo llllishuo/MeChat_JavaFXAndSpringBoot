@@ -1,35 +1,35 @@
 package com.example;
 
-import com.example.UI.controller.MainViewController;
-import com.example.UI.event.StageReadyEvent;
-import com.example.UI.view.MainView;
+import com.example.UI.view.LoginView;
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.net.SocketException;
-import java.net.URL;
-import java.util.function.Consumer;
+import java.util.*;
 
 @SpringBootApplication
-public class MainApplication {
+public class MainApplication extends AbstractJavaFxApplicationSupport {
+    //    public static void main(String[] args) {
+//        Application.launch(JavaFxApplication.class,args);
+//    }
     public static void main(String[] args) {
-        Application.launch(JavaFxApplication.class,args);
+        launch(MainApplication.class, LoginView.class, new CustomSplashScreen(), args);
     }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        super.start(stage);
+    }
+
+    @Override
+    public Collection<Image> loadDefaultIcons() {
+        return Collections.singletonList(new Image(this.getClass().getClassLoader().getResource("image/logo01.png").toExternalForm()));
+    }
+//    @Override
+//    public List<Image> loadDefaultIcons() {
+//        return Collections.singletonList(new Image(Objects.requireNonNull(this.getClass().getClassLoader().getResource("/image/Dune.gif")).toExternalForm()));
+//    }
 
 }
 

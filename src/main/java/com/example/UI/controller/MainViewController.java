@@ -7,7 +7,6 @@ import com.example.UI.view.DataDisplayView;
 import com.example.UI.view.MainView;
 import com.example.server.controller.TalkController;
 import com.example.server.controller.UserController;
-import com.example.server.entity.Friend;
 import com.example.server.entity.Talk;
 import com.example.server.entity.User;
 import com.example.server.entity.dto.FriendListDto;
@@ -16,10 +15,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -35,8 +30,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -44,15 +37,10 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
@@ -64,7 +52,6 @@ import java.util.ResourceBundle;
 
 @FXMLController
 @Slf4j
-@Scope("prototype")
 public class MainViewController implements Initializable {
 
 
@@ -250,7 +237,7 @@ public class MainViewController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         userId = sendUser.getUserId();
         log.info(String.valueOf(userId));
-        userId = 1;
+//        userId = 1;
         log.info(String.valueOf(userId));
         user = userController.getUserById(userId);
         log.info(String.valueOf(userId));
@@ -275,14 +262,15 @@ public class MainViewController implements Initializable {
     }
 
     public void dataDisplayClicked(User data) throws IOException {
-//        displayDataService.setData(data);
+        displayDataService.setData(data);
         // 创建一个新的Stage
         Stage newStage = new Stage();
         // 使用FXMLLoader从FXML文件加载新窗口的场景
-        Parent parent = dataDisplayView.getView();
-        scene = parent.getScene();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/dataDisplay.fxml"));
+        Parent root = loader.load();
+
         // 在新窗口中设置场景
-        newStage.setScene(new Scene(parent));
+        newStage.setScene(new Scene(root));
         // 显示新窗口
         newStage.show();
 /*        stage.setOnCloseRequest((e)->{

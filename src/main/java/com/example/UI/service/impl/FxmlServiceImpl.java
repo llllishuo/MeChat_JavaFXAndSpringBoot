@@ -12,8 +12,10 @@ import java.io.IOException;
 
 @Service
 public class FxmlServiceImpl implements FxmlService {
+
+
     @Getter
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     public FxmlServiceImpl(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;

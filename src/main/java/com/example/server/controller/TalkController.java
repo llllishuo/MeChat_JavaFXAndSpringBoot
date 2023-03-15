@@ -2,25 +2,16 @@ package com.example.server.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.example.server.common.time;
 import com.example.server.entity.Friend;
-import com.example.server.entity.Group;
 import com.example.server.entity.Talk;
-import com.example.server.entity.dto.FriendAndMsgListDto;
-import com.example.server.entity.dto.FriendListDto;
 import com.example.server.service.FriendService;
 import com.example.server.service.GroupService;
 import com.example.server.service.TalkService;
-import com.example.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.function.Consumer;
 
 @Controller
 public class TalkController {
