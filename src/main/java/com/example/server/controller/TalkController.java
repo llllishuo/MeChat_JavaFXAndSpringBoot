@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class TalkController {
@@ -29,13 +30,14 @@ public class TalkController {
     private GroupService groupService;
 
 
+                                    //   1        2
     public List<Talk> getMsgListById(int id1, int id2){
         LambdaQueryWrapper<Talk> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.and(wrapper -> wrapper.eq(Talk::getFromId, id1)
                         .eq(Talk::getToId, id2))
                 .or(wrapper -> wrapper.eq(Talk::getFromId, id2)
                         .eq(Talk::getToId, id1))
-                .orderByAsc(Talk::getSendTime);
+                .orderByAsc(Talk::getSendTime);//排序
         return talkService.list(queryWrapper);
 
     }
@@ -50,7 +52,9 @@ public class TalkController {
                 .or(wrapper -> wrapper.eq(Friend::getUserId, fromId)
                         .eq(Friend::getFriendId, text));
         Friend one = friendService.getOne(queryWrapper);
-        if(one.getStartTime().isEmpty()){
+
+
+        if(one.getStartTime()==null|| Objects.equals(one.getStartTime(), "")){
             one.setStartTime(format);
             one.setOverTime(format);
         }else {

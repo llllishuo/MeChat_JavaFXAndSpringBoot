@@ -33,9 +33,12 @@ public class LoginController {
         if(username.isEmpty()||password.isEmpty()){
             return R.error("用户名或密码为空!");
         }
+        //根据账号和密码进行匹配
         LambdaQueryWrapper<Login> loginLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        loginLambdaQueryWrapper.eq(Login::getUsername,username).eq(Login::getPassword,password);
+        loginLambdaQueryWrapper.eq(Login::getUsername,username)
+                .eq(Login::getPassword,password);
         Login login = loginservice.getOne(loginLambdaQueryWrapper);
+
         if(login.getIsLogin()==1){
             return R.error("当前账号已登录!");
         }

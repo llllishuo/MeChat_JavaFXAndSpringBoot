@@ -1,9 +1,11 @@
 package com.example.UI.controller;
 
 
+import com.example.MainApplication;
 import com.example.UI.service.SendDataService;
 import com.example.UI.service.SendUser;
 import com.example.UI.view.DataDisplayView;
+import com.example.UI.view.LoginView;
 import com.example.UI.view.MainView;
 import com.example.server.controller.TalkController;
 import com.example.server.controller.UserController;
@@ -15,6 +17,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -30,11 +33,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -55,9 +60,7 @@ import java.util.ResourceBundle;
 public class MainViewController implements Initializable {
 
 
-    @Getter
-    @Setter
-    static Stage stage;
+    private Stage stage;
 
     @Getter
     Scene scene;
@@ -223,24 +226,22 @@ public class MainViewController implements Initializable {
     private Text text;
 
 
-    @Setter
     private User user;
 
 
     @Setter
     private int userId;
 
+
+
     /**
      * 初始化
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        init();
         userId = sendUser.getUserId();
-        log.info(String.valueOf(userId));
-//        userId = 1;
-        log.info(String.valueOf(userId));
         user = userController.getUserById(userId);
-        log.info(String.valueOf(userId));
         tips = new Label();
         tips.setText("正在进行初始化...");
 //        user = userController.getUserById(1);
@@ -249,7 +250,7 @@ public class MainViewController implements Initializable {
         myHeadImage.setFitWidth(45);
         myHeadImage.setOnMouseClicked((e) -> {
             try {
-                dataDisplayClicked(user);
+                dataDisplayClicked(user.getId());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -260,24 +261,22 @@ public class MainViewController implements Initializable {
         getDialogBox();
 
     }
+    /**
+     * 启动初始化组件
+     */
+    void init() {
+        Platform.runLater(() -> {
+            Parent parent = mainView.getView();
+            MainViewController.this.stage = (Stage) parent.getScene().getWindow();
+            stage.setResizable(false);
+        });
+    }
 
-    public void dataDisplayClicked(User data) throws IOException {
-        displayDataService.setData(data);
-        // 创建一个新的Stage
-        Stage newStage = new Stage();
-        // 使用FXMLLoader从FXML文件加载新窗口的场景
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/dataDisplay.fxml"));
-        Parent root = loader.load();
-
-        // 在新窗口中设置场景
-        newStage.setScene(new Scene(root));
-        // 显示新窗口
-        newStage.show();
-/*        stage.setOnCloseRequest((e)->{
-
-            Parent root = scene.getRoot();
-            root.getChildrenUnmodifiable().remove(scene);
-        });*/
+    public void dataDisplayClicked(int id) throws IOException {
+        User userById = userController.getUserById(id);
+        displayDataService.setData(userById);
+        log.info(String.valueOf(displayDataService.getData()));
+        MainApplication.showView(DataDisplayView.class);
 
     }
 
@@ -291,7 +290,6 @@ public class MainViewController implements Initializable {
         }
         if (dialogBox.getChildren().size() == 4) {
             dialogBox.getChildren().remove(dialogScrollPane);
-
             dialogBox.getChildren().remove(dialogMenu);
             dialogBox.getChildren().remove(msgInput);
             dialogBox.getChildren().remove(tips);
@@ -318,8 +316,6 @@ public class MainViewController implements Initializable {
             dialogItem.setMinSize(479, 69);
             dialogItem.setAlignment(Pos.CENTER);
             dialogItem.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-
-
             dialogHeadImage = new ImageView(friend.getHeadImg());
             dialogHeadImage.setFitHeight(47);
             dialogHeadImage.setFitWidth(47);
@@ -329,7 +325,7 @@ public class MainViewController implements Initializable {
             }
             dialogHeadImage.setOnMouseClicked((e) -> {
                 try {
-                    dataDisplayClicked((Objects.equals(item.getFromId(), user.getId())) ? user : userController.getUserById(friend.getId()));
+                    dataDisplayClicked(item.getFromId());
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -445,7 +441,6 @@ public class MainViewController implements Initializable {
             loadFriendListData(item.getHeadImg(), item.getName(), item.getSendTime(), item.getContent());
             //添加鼠标单击事件
             friendItem.setOnMouseClicked(event -> {
-
                 if (dialogBox.getChildren().size() > 0) {
                     dialogBox.getChildren().remove(dialogScrollPane);
                     dialogBox.getChildren().remove(dialogMenu);
@@ -454,6 +449,7 @@ public class MainViewController implements Initializable {
                 }
 
                 List<Talk> talkList = talkController.getMsgListById(user.getId(), item.getId());
+//                log.info(String.valueOf(talkList));
                 getDialogBox(user, item, talkList);
             });
 

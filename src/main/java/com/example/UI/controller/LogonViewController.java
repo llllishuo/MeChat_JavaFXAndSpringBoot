@@ -1,12 +1,17 @@
 package com.example.UI.controller;
 
+import com.example.MainApplication;
+import com.example.UI.service.SendUser;
+import com.example.UI.service.ViewDto;
 import com.example.UI.view.LoginView;
+import com.example.UI.view.LogonView;
 import com.example.server.controller.FileUploadController;
 import com.example.server.controller.LoginController;
 import com.example.server.entity.Login;
 import com.example.server.entity.User;
 import com.example.server.entity.dto.LoginAndUser;
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -79,24 +84,36 @@ public class LogonViewController implements Initializable {
     @Autowired
     private LoginView loginView;
 
+    private Stage stage;
+
+    @Autowired
+    private ViewDto viewDto;
+
+
+    @Autowired
+    private LogonView logonView;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-
+        init();
+    }
+    /**
+     * 启动初始化组件
+     */
+    void init() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Parent parent = logonView.getView();
+                LogonViewController.this.stage = (Stage) parent.getScene().getWindow();
+                stage.setResizable(false);
+            }
+        });
     }
     @FXML
-    void backClicked(MouseEvent event) throws IOException {
-//        Stage close = (Stage) back.getScene().getWindow();
-//        close.close();
-        // 创建一个新的Stage
-        Stage newStage =(Stage) back.getScene().getWindow();;
-        // 使用FXMLLoader从FXML文件加载新窗口的场景
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
-        Parent root = loader.load();
-        // 在新窗口中设置场景
-        newStage.setScene(new Scene(root));
-        // 显示新窗口
-        newStage.show();
+    void backClicked(MouseEvent event) {
+        MainApplication.showView(LoginView.class);
+
     }
     @FXML
     public void submitClicked(MouseEvent event) throws IOException {

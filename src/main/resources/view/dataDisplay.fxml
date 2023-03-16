@@ -26,5 +26,6 @@
             <Image url="@../image/logo01.png" />
          </image>
       </ImageView>
+      <Button fx:id="back" layoutX="501.0" layoutY="356.0" mnemonicParsing="false" onMouseClicked="#backClicked" text="返回" />
    </children>
 </AnchorPane>

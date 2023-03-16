@@ -30,6 +30,7 @@ public class time {
     public time(String str) throws ParseException {
 
         this.year = Integer.parseInt(str.substring(0, 4));
+
         this.month = Integer.parseInt(str.substring(5, 7));
         this.day = Integer.parseInt(str.substring(8, 10));
         this.hour = Integer.parseInt(str.substring(11, 13));

@@ -34,6 +34,9 @@ public class UserController {
         return userService.getById(id);
     }
 
+
+
+
     public void updateUser(User user){
         userService.save(user);
     }
@@ -55,20 +58,22 @@ public class UserController {
         LambdaQueryWrapper<Friend> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Friend::getUserId, id);
         List<Friend> list = friendService.list(queryWrapper);
-
         List<FriendListDto> friendList = new ArrayList<>();
 
 
 
         for (Friend item : list) {
+            //好友信息 - name+headImage
             LambdaQueryWrapper<User> userQueryWrapper = new LambdaQueryWrapper<>();
 
             userQueryWrapper.eq(User::getId,item.getFriendId());
             User friend = userService.getOne(userQueryWrapper);
 //            friendList.add(friend);
+            //聊天记录 - 最新信息
             LambdaQueryWrapper<Talk> talkQueryWrapper = new LambdaQueryWrapper<>();
             talkQueryWrapper.eq(Talk::getSendTime,item.getOverTime());
             List<Talk> talkList = talkService.list(talkQueryWrapper);
+
             Talk news = new Talk();
             for (Talk talkItem :talkList) {
                 news = talkItem;

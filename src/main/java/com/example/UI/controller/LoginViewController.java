@@ -1,7 +1,10 @@
 package com.example.UI.controller;
 
 
+import com.example.MainApplication;
 import com.example.UI.service.SendUser;
+import com.example.UI.service.ViewDto;
+import com.example.UI.view.LoginView;
 import com.example.UI.view.LogonView;
 import com.example.UI.view.MainView;
 import com.example.server.common.R;
@@ -9,6 +12,7 @@ import com.example.server.controller.LoginController;
 import com.example.server.entity.User;
 import com.example.server.utils.BeanUtils;
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.*;
@@ -46,8 +50,8 @@ public class LoginViewController implements Initializable {
     private MainView mainView;
 
 
-//    @Autowired
-    private LogonView logonView = BeanUtils.getBean(LogonView.class);
+    @Autowired
+    private LogonView logonView;
 
     @FXML
     private AnchorPane loginMain;
@@ -92,25 +96,34 @@ public class LoginViewController implements Initializable {
     @Getter
     private User user;
 
+
+    private Stage stage;
     private Scene scene;
     private Parent view;
+
+    @Autowired
+    private ViewDto viewDto;
+
+    @Autowired
+    private LoginView loginView;
+
+    private Stage newStage;
+    private int i = 0;
 
 
     @FXML
     void loginClicked(MouseEvent event) throws IOException {
-        R data = loginController.login(username.getText(), password.getText());
+        R data = loginController.login(username.getText(), password.getText()); //login.id
         if (data.getCode() == 1) {
             if (data.getData() == null) {
                 return;
             }
             sendUser.setUserId((Integer) data.getData());
             log.info(String.valueOf(sendUser.getUserId()));
-            submit((Integer) data.getData());
-//            Parent parent = mainView.getView();
-//            scene =  parent.getScene();
-//            MainViewController.stage = (Stage) parent.getScene().getWindow();
-//            sendUser.setUserId((Integer) data.getData());
-//            mainViewController.setUserId((Integer) data.getData());
+
+            Stage close = (Stage) login.getScene().getWindow();
+            close.close();
+            MainApplication.showView(MainView.class);
             return;
         }
         CPM(data.getMsg());
@@ -130,11 +143,10 @@ public class LoginViewController implements Initializable {
 
     public void submit(int id) throws IOException {
         // 创建一个新的Stage
-        // 创建一个新的Stage
         Stage newStage = (Stage) login.getScene().getWindow();
         // 使用FXMLLoader从FXML文件加载新窗口的场景
         Parent parent = mainView.getView();
-        scene = parent.getScene();
+//        scene = parent.getScene();
 
         // 在新窗口中设置场景
         newStage.setScene(new Scene(parent));
@@ -150,34 +162,25 @@ public class LoginViewController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        init();
+    }
 
-
+    /**
+     * 启动初始化组件
+     */
+    void init() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Parent parent = loginView.getView();
+                LoginViewController.this.stage = (Stage) parent.getScene().getWindow();
+                stage.setResizable(false);
+            }
+        });
     }
 
     public void logonClicked(MouseEvent mouseEvent) throws IOException {
-//        Stage close = (Stage) logon.getScene().getWindow();
-//        close.close();
-
-        // 创建一个新的Stage
-        Stage newStage = (Stage) login.getScene().getWindow();
-
-        // 使用FXMLLoader从FXML文件加载新窗口的场景
-
-
-
-
-        view = logonView.getView();
-
-        scene = new Scene(view);
-        log.info(String.valueOf(view.getStyle().getClass()));
-        log.info(String.valueOf(newStage.getScene()));
-        newStage.setScene(scene);
-
-        // 在新窗口中设置场景
-//        newStage.setScene(new Scene(view));
-        // 显示新窗口
-        newStage.show();
-
+        MainApplication.showView(LogonView.class);
     }
 
 
